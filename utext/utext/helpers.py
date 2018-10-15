@@ -9,7 +9,7 @@ def filter_texts(texts):
     not_chars = r'[^\x20-\x7e]'
     filtered = []
 
-    for text in selector_list.extract():
+    for text in texts:
         # filter out non-characters, strip extra spaces and periods
         stripped = re.sub(not_chars, '', text).strip(' .')
         if stripped:
