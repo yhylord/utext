@@ -1,15 +1,17 @@
+import re
+
 # remove newline characters and tabs and extra spaces in texts,
 # also filter out empty texts
 
 
-def filter_texts(selector_list):
-    # delete any \n, \t, \xa0, or \u2028
-    # \xa0 and \u2028 are unicode space and separator
-    translation_table = dict.fromkeys(map(ord, '\n\t\xa0\u2028'), None)
+def filter_texts(texts):
+    # anything that's not numbers, letters, or punctuations
+    not_chars = r'[^\x20-\x7e]'
     filtered = []
+
     for text in selector_list.extract():
-        # filter out extra periods
-        stripped = text.translate(translation_table).strip(' .')
+        # filter out non-characters, strip extra spaces and periods
+        stripped = re.sub(not_chars, '', text).strip(' .')
         if stripped:
             filtered.append(stripped)
     return filtered
