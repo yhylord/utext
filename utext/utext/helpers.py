@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlparse
 
 # remove newline characters and tabs and extra spaces in texts,
 # also filter out empty texts
@@ -18,11 +19,6 @@ def filter_texts(texts):
 
 
 def get_page_name(url):
-    url_levels = url.split('/')
-    if url_levels[-1]:  # not empty string = not ended with '/' = html
-        page_name = url_levels[-1].split('.')[0]
-    elif '.' in url_levels[-2]:  # root domain
-        page_name = url_levels[-2].split('.')[0]
-    else:  # non-root domain ended with '/'
-        page_name = url_levels[-2]
-    return page_name
+    path = urlparse(url).path
+    page_name_with_file_extension = path.strip('/').replace('/', '_')
+    return page_name_with_file_extension.split('.')[0]
