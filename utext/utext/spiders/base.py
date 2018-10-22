@@ -6,7 +6,11 @@ class UTSpider(scrapy.Spider):
     allowed_domains = ['*.utexas.edu']
 
     def parse(self, response):
-        texts = response.css(self.selector).extract()
+        try:
+            texts = response.css(self.selector).extract()
+        except scrapy.exceptions.NotSupported:
+            # if the response body is not text-based (e.g. file)
+            return
         clean_texts = filter_texts(texts)
 
         page_name = get_page_name(response.url)
@@ -18,3 +22,6 @@ class UTSpider(scrapy.Spider):
         with open(filename, 'w') as f:
             f.write('\n'.join(clean_texts))
         self.log('Write file ' + filename)
+
+        for href in response.css('a::attr(href)'):
+            yield response.follow(href, callback=self.parse)
