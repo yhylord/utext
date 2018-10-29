@@ -12,6 +12,8 @@ class UTSpider(scrapy.Spider):
             # if the response body is not text-based (e.g. file)
             return
         clean_texts = filter_texts(texts)
+        if not clean_texts:  # if nothing returns, see what's wrong
+            print(response.body)
 
         page_name = get_page_name(response.url)
         if page_name:
