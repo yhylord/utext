@@ -1,0 +1,6 @@
+train/FRC/
+.tfrecords
+datasets/glove
+datasets/squad
+data/*.json
+data/*.tfrecords
