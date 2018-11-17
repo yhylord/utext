@@ -26,26 +26,27 @@ with open(os.path.join('qa_net', config.char_dictionary), "r") as fh:
 sess_config = tf.ConfigProto(allow_soft_placement=True)
 sess_config.gpu_options.allow_growth = True
 
+sess = None
+
+with model.graph.as_default():
+
+    sess = tf.Session(config=sess_config)
+            
+    sess.run(tf.global_variables_initializer())
+            
+    saver = tf.train.Saver()
+    saver.restore(sess, tf.train.latest_checkpoint(os.path.join('qa_net', config.save_dir)))
+
+    if config.decay < 1.0:
+        sess.run(model.assign_vars)
+
 def solve(passage, question):
-
-    with model.graph.as_default():
-
-        with tf.Session(config=sess_config) as sess:
-            
-            sess.run(tf.global_variables_initializer())
-            
-            saver = tf.train.Saver()
-            saver.restore(sess, tf.train.latest_checkpoint(os.path.join('qa_net', config.save_dir)))
-            
-            if config.decay < 1.0:
                 
-                sess.run(model.assign_vars)
-                
-            context = word_tokenize(passage.replace("''", '" ').replace("``", '" '))
-            c,ch,q,qh = convert_to_features(config, (passage, question), word_dictionary, char_dictionary)
-            fd = {'context:0': [c], 'question:0': [q], 'context_char:0': [ch], 'question_char:0': [qh]}
-            yp1, yp2 = sess.run([model.yp1, model.yp2], feed_dict = fd)
-            yp2[0] += 1
-            response = " ".join(context[yp1[0]:yp2[0]])
+    context = word_tokenize(passage.replace("''", '" ').replace("``", '" '))
+    c,ch,q,qh = convert_to_features(config, (passage, question), word_dictionary, char_dictionary)
+    fd = {'context:0': [c], 'question:0': [q], 'context_char:0': [ch], 'question_char:0': [qh]}
+    yp1, yp2 = sess.run([model.yp1, model.yp2], feed_dict = fd)
+    yp2[0] += 1
+    response = " ".join(context[yp1[0]:yp2[0]])
 
-            return response
+    return response

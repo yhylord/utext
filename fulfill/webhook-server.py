@@ -44,19 +44,29 @@ def hook():
         return 'Invalid Request.'
 
 def handle_text(request):
-        
+
     req = request.get_json()
 
+    # extract info from dialogflow
     intent_name = req['queryResult']['intent']['displayName'].lower()
     query_params = req['queryResult']['parameters']['query'].lower()
     user_question = req['queryResult']['queryText'].lower()
 
-    docs = utextdata.get_relevent_documents([intent_name, query_type])
+    # find related docs
+    docs = utextdata.get_relevent_documents([intent_name, query_params])
     best_doc = docs[0]['_source']
     passage = ". ".join(best_doc['content'])
-    
-    res = 'Connected! ' + query_type + ' ' + best_doc['name']
-        
+
+    # use AI
+    raw_ans = solver.solve(passage, user_question)
+    raw_ans = raw_ans.capitalize()
+
+    # construct response
+    debug = '!' + query_params + '/' + best_doc['name']
+    res = debug + ' ' + raw_ans
+
+    print('-> ' + res)
+
     return make_response(jsonify({'fulfillmentText': res}))
 
 #### Run ####
