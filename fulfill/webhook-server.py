@@ -1,15 +1,21 @@
+
+from flask import Flask, request, make_response, jsonify
+import requests
 import sys
 sys.path.insert(0, "./qa_net")
 
-from flask import Flask, request, make_response, jsonify
 import solver
-import requests
+import utextdata
 
 app = Flask(__name__)
+
+#### Index Page ####
 
 @app.route('/')
 def index():
     return 'UText Webhook'
+
+#### Debug Systems ####
 
 @app.route('/debug')
 def debug():
@@ -21,6 +27,15 @@ def debug():
     question = "When is the UHS Nurse Advice Line open?"
     return solver.solve(passage, question)
 
+@app.route('/debug2')
+def debug2():
+    docs = utextdata.get_relevent_documents(['allergy', 'shots'])
+    best_doc_content = docs[0]['_source']['content']
+    content = ". ".join(best_doc_content)
+    return content
+
+#### Webhook ####
+
 @app.route('/hook', methods=['POST', 'GET'])
 def hook():
     if request.method == 'POST':
@@ -29,16 +44,21 @@ def hook():
         return 'Invalid Request.'
 
 def handle_text(request):
-    """Main Intent Handler
-     This handles the intent as sent by dialog flow
-    """
-    # api_data = get_data()
         
     req = request.get_json()
-    query = req['queryResult']['parameters']['query']
-    res = 'Connected! ' + query
+    
+    query_type = req['queryResult']['parameters']['query'].lower()
+    user_question = req['queryResult']['queryText']['query'].lower()
+
+    docs = utextdata.get_relevent_documents([query_type])
+    best_doc = docs[0]['_source']
+    passage = ". ".join(best_doc['content'])
+    
+    res = 'Connected! ' + query_type + ' ' + best_doc['name']
         
     return make_response(jsonify({'fulfillmentText': res}))
+
+#### Run ####
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=False)
