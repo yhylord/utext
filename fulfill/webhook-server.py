@@ -46,11 +46,12 @@ def hook():
 def handle_text(request):
         
     req = request.get_json()
-    
-    query_type = req['queryResult']['parameters']['query'].lower()
-    user_question = req['queryResult']['queryText']['query'].lower()
 
-    docs = utextdata.get_relevent_documents([query_type])
+    intent_name = req['queryResult']['intent']['displayName'].lower()
+    query_params = req['queryResult']['parameters']['query'].lower()
+    user_question = req['queryResult']['queryText'].lower()
+
+    docs = utextdata.get_relevent_documents([intent_name, query_type])
     best_doc = docs[0]['_source']
     passage = ". ".join(best_doc['content'])
     
