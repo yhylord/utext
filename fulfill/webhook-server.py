@@ -62,7 +62,7 @@ def handle_text(request):
     raw_ans = raw_ans.capitalize()
 
     # construct response
-    debug = '!' + query_params + '/' + best_doc['name']
+    debug = '[' + query_params + ' @ ' + best_doc['name'] + ']'
     res = debug + ' ' + raw_ans
 
     print('-> ' + res)
@@ -72,4 +72,11 @@ def handle_text(request):
 #### Run ####
 
 if __name__ == "__main__":
+
+    # warm up
+    passage = """
+    The UHS Nurse Advice Line is staffed 24 hours a day, every day of the year.
+    """
+    solve(passage, "When is the UHS Nurse Advice Line open?")
+
     app.run(host='0.0.0.0', port=8000, debug=False)
