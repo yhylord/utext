@@ -1,0 +1,6 @@
+tensorflow
+spacy
+flask
+requests
+elasticsearch
+elasticsearch-dsl
