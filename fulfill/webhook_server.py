@@ -1,8 +1,7 @@
-
 from flask import Flask, request, make_response, jsonify
 import requests
 import sys
-sys.path.insert(0, "./document-qa")
+import re
 
 import qa_util
 import utextdata
@@ -53,6 +52,8 @@ def hook():
 def parse_dialogflow(json_req):
     
     intent_name = json_req['queryResult']['intent']['displayName'].lower()
+    if 'Default Fallback' in intent_name:
+        intent_name = ''
     
     try:
         query_params = json_req['queryResult']['parameters']['query'].lower()
@@ -73,22 +74,41 @@ def handle_text(intent_name, query_params, user_question):
     # use AI
     all_ans = []
     for doc in best_docs:
-        ans, conf = qa_util.find_answer([doc], user_question)
-        ans = format_ans(ans)
-        all_ans.append((ans, conf))
+        raw_ans, conf = qa_util.find_answer([doc], user_question)
+        if not is_bad_ans(raw_ans):
+            ans = format_ans(raw_ans)
+            all_ans.append((ans, conf))
     all_ans.sort(key=lambda a:a[1], reverse=True)
     
     # construct response
-    debug = '[' + docs[0]['_source']['name'] + '] ' + f'(Confidence: {all_ans[0][1]:.2f}%)'
-    res = debug + ' ' + all_ans[0][0]
-
+    debug = f'[Top Doc: {docs[0]["_source"]["name"]}] (Confidence: {all_ans[0][1]:.2f}%)'
+    best_ans = all_ans[0][0]
+    res = debug + ' ' + best_ans
+    
     print('-> ' + res)
 
     return make_response(jsonify({'fulfillmentText': res}))
 
 
 def format_ans(ans):
-    return ans.capitalize()
+    if ans[0].islower():
+        ans = ans[0].upper() + ans[1:]
+    if not ans.endswith('.'):
+        ans += '.'
+    return ans
+
+def is_bad_ans(ans):
+    
+    if len(ans) == 0:
+        return True
+    
+    raw = ans.replace('.', '').strip()
+    raw = raw.replace(' ', '').lower()
+    if raw in 'utaustin doctor people things':
+        return True
+    
+    return False
+    
 
 #### Run ####
 

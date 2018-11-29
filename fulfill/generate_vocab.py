@@ -16,7 +16,8 @@ terms = "university scholarship tuition textbooks books party \
         career apps resume learning jobs emotions work sick computer\
         medicine lifestyle emotional sexuality exams mail packages\
         vegan dairy health youth vote election testing law sports\
-        football parking"
+        football parking sti nurse women men therapy travel study\
+        nutrition j2 buffet kinsolving"
 
 vocab = set()
 
