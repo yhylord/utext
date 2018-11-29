@@ -92,7 +92,7 @@ class LearnedCharEmbedder(CharEmbedder):
                 counts[c] += count
 
         self._char_to_ix = {c:i+2 for i,c in enumerate(c for c,count in counts.items() if count >= self.char_th)}
-        print("Learning an embedding for %d characters" % (len(self._char_to_ix)-1))
+        # print("Learning an embedding for %d characters" % (len(self._char_to_ix)-1))
 
     def init(self, word_vec_loader, voc: Iterable[str]):
         pass
@@ -251,7 +251,7 @@ class FixedWordEmbedder(WordEmbedder):
         matrix_list = [null_embed, unk_embed]
 
         if self._special_tokens is not None and len(self._special_tokens) > 0:
-            print("Building embeddings for %d special_tokens" % (len(self._special_tokens)))
+            # print("Building embeddings for %d special_tokens" % (len(self._special_tokens)))
             tok_embed = tf.get_variable(shape=(len(self._special_tokens), dim), name="token_embed",
                                         dtype=np.float32, trainable=True,
                                         initializer=tf.random_uniform_initializer(-self.word_vec_init_scale,
@@ -276,7 +276,7 @@ class FixedWordEmbedder(WordEmbedder):
                     self._word_to_ix[lower] = ix
                     ix += 1
 
-        print("Had pre-trained word embeddings for %d of %d words" % (len(mat), len(voc)))
+        # print("Had pre-trained word embeddings for %d of %d words" % (len(mat), len(voc)))
 
         matrix_list.append(tf.constant(value=np.vstack(mat)))
 
@@ -401,7 +401,7 @@ class FixedWordEmbedderPlaceholders(WordEmbedder):
         matrix_list = [null_embed]
 
         if self._special_tokens is not None and len(self._special_tokens) > 0:
-            print("Building embeddings for %d special_tokens" % (len(self._special_tokens)))
+            # print("Building embeddings for %d special_tokens" % (len(self._special_tokens)))
             tok_embed = tf.get_variable(shape=(len(self._special_tokens), dim), name="token_embed",
                                         dtype=np.float32, trainable=True,
                                         initializer=tf.random_uniform_initializer(-self.word_vec_init_scale,
@@ -426,7 +426,7 @@ class FixedWordEmbedderPlaceholders(WordEmbedder):
                     self._word_to_ix[lower] = ix
                     ix += 1
 
-        print("Had pre-trained word embeddings for %d of %d words" % (len(mat), len(voc)))
+        # print("Had pre-trained word embeddings for %d of %d words" % (len(mat), len(voc)))
 
         mat = np.vstack(mat)
         if self.placeholder_flag:
