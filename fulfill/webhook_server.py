@@ -52,14 +52,14 @@ def hook():
 
 def parse_dialogflow(json_req):
     
-    intent_name = req['queryResult']['intent']['displayName'].lower()
+    intent_name = json_req['queryResult']['intent']['displayName'].lower()
     
     try:
-        query_params = req['queryResult']['parameters']['query'].lower()
+        query_params = json_req['queryResult']['parameters']['query'].lower()
     except KeyError:
         query_params = ''
         
-    user_question = req['queryResult']['queryText'].lower()
+    user_question = json_req['queryResult']['queryText'].lower()
     
     return intent_name, query_params, user_question
 
