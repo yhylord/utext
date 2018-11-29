@@ -2,9 +2,9 @@
 from flask import Flask, request, make_response, jsonify
 import requests
 import sys
-sys.path.insert(0, "./qa_net")
+sys.path.insert(0, "./document-qa")
 
-import solver
+import qa_util
 import utextdata
 
 app = Flask(__name__)
@@ -25,7 +25,7 @@ def debug():
     The Nurse Advice Line is available only to students at the University of Texas at Austin.
     """
     question = "When is the UHS Nurse Advice Line open?"
-    return solver.solve(passage, question)
+    return qa_util.find_answer([passage], question)[0]
 
 @app.route('/debug2')
 def debug2():
@@ -54,15 +54,14 @@ def handle_text(request):
 
     # find related docs
     docs = utextdata.get_relevent_documents([intent_name, query_params])
-    best_doc = docs[0]['_source']
-    passage = ". ".join(best_doc['content'])
+    best_docs = [". ".join(d['_source']['content']) for d in docs]
 
     # use AI
-    raw_ans = solver.solve(passage, user_question)
+    raw_ans, conf = qa_util.find_answer(best_docs, question)
     raw_ans = raw_ans.capitalize()
 
     # construct response
-    debug = '[' + query_params + ' @ ' + best_doc['name'] + ']'
+    debug = '[' + query_params + ' @ ' + best_doc['name'] + '] ' + f'({conf:.2f})'
     res = debug + ' ' + raw_ans
 
     print('-> ' + res)

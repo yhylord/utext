@@ -1,6 +1,12 @@
 tensorflow
-spacy
 flask
 requests
 elasticsearch
 elasticsearch-dsl
+tqdm
+scikit-learn
+scipy
+pandas>=0.18.0
+ujson
+nltk
+keras
