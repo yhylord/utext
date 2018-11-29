@@ -13,7 +13,10 @@ terms = "university scholarship tuition textbooks books party \
         people assault classes ida nurse technology food jester government\
         drugs clubs organizations free tutoring grants paper supplies\
         gpa rank honor societies alcohol alumni natural science\
-        career apps resume learning jobs "
+        career apps resume learning jobs emotions work sick computer\
+        medicine lifestyle emotional sexuality exams mail packages\
+        vegan dairy health youth vote election testing law sports\
+        football parking"
 
 vocab = set()
 

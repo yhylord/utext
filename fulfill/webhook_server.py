@@ -57,7 +57,7 @@ def handle_text(request):
     best_docs = [". ".join(d['_source']['content']) for d in docs]
 
     # use AI
-    raw_ans, conf = qa_util.find_answer(best_docs, question)
+    raw_ans, conf = qa_util.find_answer(best_docs, user_question)
     raw_ans = raw_ans.capitalize()
 
     # construct response
