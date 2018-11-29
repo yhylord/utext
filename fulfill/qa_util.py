@@ -30,11 +30,11 @@ print('Generating Vocab...', end='')
 
 # preload all the words
 vocab = set()
-with open(os.path.join('.', 'qa-model', 'glove', 'glove.840B.300d.txt'), encoding='utf-8') as glove:
-    for line in glove:
-        word = line[:line.index(' ')]
-        if word.isalpha() or word in "...,/:;-%$?![]()":
-            vocab.add(word.lower())
+with open(os.path.join('.', 'qa-model', 'vocab.txt'), encoding='utf-8') as vocfile:
+    for line in vocfile:
+        word = line.strip()
+        if len(word) > 0:
+            vocab.add(word)
 
 print('done')
 
