@@ -1,7 +1,7 @@
 
 # imports
 import sys
-sys.path.insert(0, "./document-qa")
+sys.path.insert(0, "./qa-model")
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -23,14 +23,14 @@ from docqa.model_dir import ModelDir
 from docqa.utils import flatten_iterable
 
 # load model
-model_dir = ModelDir(os.path.join('.', 'document-qa'))
+model_dir = ModelDir(os.path.join('.', 'qa-model'))
 model = model_dir.get_model()
 
 print('Generating Vocab...', end='')
 
 # preload all the words
 vocab = set()
-with open(os.path.join('.', 'document-qa', 'glove', 'glove.840B.300d.txt'), encoding='utf-8') as glove:
+with open(os.path.join('.', 'qa-model', 'glove', 'glove.840B.300d.txt'), encoding='utf-8') as glove:
     for line in glove:
         word = line[:line.index(' ')]
         if word.isalpha():
