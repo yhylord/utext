@@ -61,6 +61,9 @@ def parse_dialogflow(json_req):
         query_params = ''
         
     user_question = json_req['queryResult']['queryText'].lower()
+
+    # temp
+    intent_name = ''
     
     return intent_name, query_params, user_question
 
@@ -104,7 +107,7 @@ def is_bad_ans(ans):
     
     raw = ans.replace('.', '').strip()
     raw = raw.replace(' ', '').lower()
-    if raw in 'utaustin doctor people things':
+    if raw in 'utaustin doctor people things campus':
         return True
     
     return False
