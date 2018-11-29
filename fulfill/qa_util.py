@@ -33,10 +33,12 @@ vocab = set()
 with open(os.path.join('.', 'qa-model', 'glove', 'glove.840B.300d.txt'), encoding='utf-8') as glove:
     for line in glove:
         word = line[:line.index(' ')]
-        if word.isalpha():
+        if word.isalpha() or word in "...,/:;-%$?![]()":
             vocab.add(word.lower())
 
 print('done')
+
+print('Loading Model...', end='')
 
 # init tf session and weights
 model.set_input_spec(ParagraphAndQuestionSpec(batch_size=None), vocab)
@@ -47,13 +49,15 @@ with sess.as_default():
     best_spans, conf = model.get_prediction().get_best_span(16)
     model_dir.restore_checkpoint(sess)
 
+print('done')
+
 # use docs: list<str> to find ans: str to question: str
 def find_answer(documents, raw_question):
 
-    global best_spans, conf
-
     raw_question = raw_question.lower()
     documents = [d.lower() for d in documents]
+
+    global best_spans, conf
 
     documents = [re.split("\s*\n\s*", doc) for doc in documents]
     tokenizer = NltkAndPunctTokenizer()

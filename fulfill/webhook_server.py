@@ -53,7 +53,7 @@ def handle_text(request):
     user_question = req['queryResult']['queryText'].lower()
 
     # find related docs
-    docs = utextdata.get_relevent_documents([intent_name, query_params])
+    docs = utextdata.get_relevent_documents([intent_name, query_params])[:5]
     best_docs = [". ".join(d['_source']['content']) for d in docs]
 
     # use AI
