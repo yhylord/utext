@@ -106,7 +106,13 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# mac
+.DS_Store
+
 # mypy
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# utext
+glove.840B.300d.txt
