@@ -3,7 +3,8 @@ from elasticsearch_dsl import Search, Q
 import os
 
 http_auth = os.environ['UTEXT_NAME'] + ":" + os.environ['UTEXT_PSWD']
-client = Elasticsearch("https://utext.club", http_auth=http_auth, use_ssl=True, verify_certs=True)
+client = Elasticsearch("https://utext.club", http_auth=http_auth, use_ssl=True)
+#client = Elasticsearch("https://es.utext.club", http_auth=http_auth, use_ssl=True, verify_certs=True)
 client.ping()
 
 
